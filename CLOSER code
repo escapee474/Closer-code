@@ -1,0 +1,51 @@
+#include <Servo.h>
+int trigPin = 6;
+int echoPin = 7;
+int ledPin = 5;
+int servoPin = 4;
+Servo myServo;
+int distance;
+int brightness;
+int minD = 2;
+int maxD = 20;//从距离为20cm开始逐渐变亮直到2cm时达到最亮
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  myServo.attach(servoPin);
+
+}
+
+void loop() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);  
+  digitalWrite(trigPin, LOW);
+  long duration = pulseIn(echoPin, HIGH);
+  distance = duration / 29 / 2;
+  if (distance <= maxD && distance >= minD){
+
+    brightness = map(distance, minD, maxD, 255, 0);
+
+    analogWrite(ledPin, brightness);
+
+  }else{
+
+    analogWrite(ledPin,0);
+
+  }
+  if (distance <5) {
+    myServo.write(180);
+  } else {
+    myServo.write(0);
+  }
+  delay(50);
+}
+
+
+
+
